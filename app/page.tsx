@@ -1,5 +1,6 @@
 import { milestones, project, techStack } from "./data/milestones";
 import type { Milestone, Task, TaskStatus } from "./data/milestones";
+import Image from "next/image";
 
 // ── helpers ────────────────────────────────────────────────
 
@@ -49,9 +50,10 @@ export default function Home() {
         <p className="text-xs font-medium uppercase tracking-widest text-muted">
           {project.university}
         </p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-          {project.name}
-        </h1>
+        <div className="flex flex-col my-3 ">
+        <Image src="/outlined-logo.png" alt="Logo" width={70} height={70} />
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{project.name}</h1>
+        </div>
         <p className="mt-3 text-base leading-relaxed text-muted">
           {project.tagline}
         </p>
