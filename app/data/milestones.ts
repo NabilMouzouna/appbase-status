@@ -1,220 +1,212 @@
 // ============================================================
-// SINGLE SOURCE OF TRUTH — edit this file to update the site.
+// STRUCTURE ONLY — statuses are stored in Turso and merged
+// at request time. Task `id` fields are the DB primary keys.
 // ============================================================
 
 export type TaskStatus = "done" | "in-progress" | "upcoming";
 
 export interface Task {
-  title: string;
-  status: TaskStatus;
+  id: string;
+  titleKey: string; // translation key
+  status: TaskStatus; // default; overridden by DB at runtime
 }
 
 export interface Week {
-  label: string;
-  summary: string;
+  labelKey: string;
+  summaryKey: string;
   tasks: Task[];
 }
 
 export interface Milestone {
   id: string;
-  title: string;
-  subtitle: string;
-  status: TaskStatus;
-  weeks: string;
-  deliverable: string;
+  titleKey: string;
+  subtitleKey: string;
+  status: TaskStatus; // derived from tasks at runtime
+  weeksKey: string;
+  deliverableKey: string;
   breakdown: Week[];
 }
-
-// -----------------------------------------------------------
-//  MILESTONES — update statuses here as you make progress
-// -----------------------------------------------------------
 
 export const milestones: Milestone[] = [
   {
     id: "planning",
-    title: "Planning & Architecture",
-    subtitle: "Research, ADRs, and system design",
+    titleKey: "ms.planning.title",
+    subtitleKey: "ms.planning.subtitle",
     status: "done",
-    weeks: "Pre-M1",
-    deliverable:
-      "README, architecture docs, ADRs, API spec, monorepo scaffold",
+    weeksKey: "ms.planning.weeks",
+    deliverableKey: "ms.planning.deliverable",
     breakdown: [
       {
-        label: "Research & Decisions",
-        summary: "Evaluated frameworks, wrote ADRs, designed API surface",
+        labelKey: "ms.planning.w0.label",
+        summaryKey: "ms.planning.w0.summary",
         tasks: [
-          { title: "Framework evaluation (Fastify, Express, Hono)", status: "done" },
-          { title: "ADR-001: API framework selection", status: "done" },
-          { title: "ADR-002: ORM and migration strategy", status: "done" },
-          { title: "ADR-003: Auth implementation strategy", status: "done" },
-          { title: "API spec design (REST surface)", status: "done" },
-          { title: "Architecture document (M1 → M4)", status: "done" },
+          { id: "planning-0-0", titleKey: "ms.planning.w0.t0", status: "done" },
+          { id: "planning-0-1", titleKey: "ms.planning.w0.t1", status: "done" },
+          { id: "planning-0-2", titleKey: "ms.planning.w0.t2", status: "done" },
+          { id: "planning-0-3", titleKey: "ms.planning.w0.t3", status: "done" },
+          { id: "planning-0-4", titleKey: "ms.planning.w0.t4", status: "done" },
+          { id: "planning-0-5", titleKey: "ms.planning.w0.t5", status: "done" },
         ],
       },
     ],
   },
   {
     id: "setup",
-    title: "Project Setup",
-    subtitle: "Monorepo, tooling, CI pipeline",
+    titleKey: "ms.setup.title",
+    subtitleKey: "ms.setup.subtitle",
     status: "done",
-    weeks: "Pre-M1",
-    deliverable: "Turborepo monorepo with CI, linting, and shared packages",
+    weeksKey: "ms.setup.weeks",
+    deliverableKey: "ms.setup.deliverable",
     breakdown: [
       {
-        label: "Infrastructure",
-        summary: "Monorepo scaffold, shared configs, CI workflows",
+        labelKey: "ms.setup.w0.label",
+        summaryKey: "ms.setup.w0.summary",
         tasks: [
-          { title: "Turborepo monorepo setup", status: "done" },
-          { title: "Shared tsconfig, ESLint, Prettier", status: "done" },
-          { title: "GitHub Actions CI (lint, typecheck, test)", status: "done" },
-          { title: "Package structure (api, dashboard, sdk, db, types)", status: "done" },
+          { id: "setup-0-0", titleKey: "ms.setup.w0.t0", status: "done" },
+          { id: "setup-0-1", titleKey: "ms.setup.w0.t1", status: "done" },
+          { id: "setup-0-2", titleKey: "ms.setup.w0.t2", status: "done" },
+          { id: "setup-0-3", titleKey: "ms.setup.w0.t3", status: "done" },
         ],
       },
     ],
   },
   {
     id: "m1",
-    title: "M1 — Single Instance BaaS",
-    subtitle: "Auth, DB, Storage, SDK, Dashboard",
+    titleKey: "ms.m1.title",
+    subtitleKey: "ms.m1.subtitle",
     status: "done",
-    weeks: "Weeks 1–4",
-    deliverable:
-      "One BaaS unit, working SDK, and a demo app running fully offline",
+    weeksKey: "ms.m1.weeks",
+    deliverableKey: "ms.m1.deliverable",
     breakdown: [
       {
-        label: "Week 1 — Auth + API Keys",
-        summary: "Authentication system and API key middleware",
+        labelKey: "ms.m1.w0.label",
+        summaryKey: "ms.m1.w0.summary",
         tasks: [
-          { title: "better-auth integration (register, login, refresh)", status: "done" },
-          { title: "API key issuance and validation middleware", status: "done" },
-          { title: "SDK auth module", status: "done" },
+          { id: "m1-0-0", titleKey: "ms.m1.w0.t0", status: "done" },
+          { id: "m1-0-1", titleKey: "ms.m1.w0.t1", status: "done" },
+          { id: "m1-0-2", titleKey: "ms.m1.w0.t2", status: "done" },
         ],
       },
       {
-        label: "Week 2 — Database API",
-        summary: "Collection CRUD and SDK db module",
+        labelKey: "ms.m1.w1.label",
+        summaryKey: "ms.m1.w1.summary",
         tasks: [
-          { title: "Collection management endpoints", status: "done" },
-          { title: "Full CRUD on records", status: "done" },
-          { title: "SDK db module", status: "done" },
-          { title: "Demo app stores & retrieves data", status: "done" },
+          { id: "m1-1-0", titleKey: "ms.m1.w1.t0", status: "done" },
+          { id: "m1-1-1", titleKey: "ms.m1.w1.t1", status: "done" },
+          { id: "m1-1-2", titleKey: "ms.m1.w1.t2", status: "done" },
+          { id: "m1-1-3", titleKey: "ms.m1.w1.t3", status: "done" },
         ],
       },
       {
-        label: "Week 3 — Storage",
-        summary: "File upload/download and SDK storage module",
+        labelKey: "ms.m1.w2.label",
+        summaryKey: "ms.m1.w2.summary",
         tasks: [
-          { title: "Bucket-based upload/download endpoints", status: "done" },
-          { title: "File scoping per user", status: "done" },
-          { title: "SDK storage module", status: "done" },
+          { id: "m1-2-0", titleKey: "ms.m1.w2.t0", status: "done" },
+          { id: "m1-2-1", titleKey: "ms.m1.w2.t1", status: "done" },
+          { id: "m1-2-2", titleKey: "ms.m1.w2.t2", status: "done" },
         ],
       },
       {
-        label: "Week 4 — Real-time + Dashboard",
-        summary: "SSE subscriptions, dashboard UI, Docker packaging",
+        labelKey: "ms.m1.w3.label",
+        summaryKey: "ms.m1.w3.summary",
         tasks: [
-          { title: "SSE real-time on DB collections", status: "done" },
-          { title: "SDK subscribe() method", status: "done" },
-          { title: "App-specific admin dashboard", status: "done" },
-          { title: "Docker packaging (single docker run)", status: "done" },
+          { id: "m1-3-0", titleKey: "ms.m1.w3.t0", status: "done" },
+          { id: "m1-3-1", titleKey: "ms.m1.w3.t1", status: "done" },
+          { id: "m1-3-2", titleKey: "ms.m1.w3.t2", status: "done" },
+          { id: "m1-3-3", titleKey: "ms.m1.w3.t3", status: "done" },
         ],
       },
     ],
   },
   {
     id: "m2",
-    title: "M2 — Container Orchestration",
-    subtitle: "Multi-app provisioning and isolation",
+    titleKey: "ms.m2.title",
+    subtitleKey: "ms.m2.subtitle",
     status: "upcoming",
-    weeks: "Weeks 5–6",
-    deliverable:
-      "Master control plane that provisions isolated BaaS instances per app",
+    weeksKey: "ms.m2.weeks",
+    deliverableKey: "ms.m2.deliverable",
     breakdown: [
       {
-        label: "Week 5 — Control Plane",
-        summary: "Master process and app provisioning",
+        labelKey: "ms.m2.w0.label",
+        summaryKey: "ms.m2.w0.summary",
         tasks: [
-          { title: "Master control plane at appbase.local", status: "upcoming" },
-          { title: "App provisioning / deletion service", status: "upcoming" },
-          { title: "Docker SDK integration (dockerode)", status: "upcoming" },
+          { id: "m2-0-0", titleKey: "ms.m2.w0.t0", status: "upcoming" },
+          { id: "m2-0-1", titleKey: "ms.m2.w0.t1", status: "upcoming" },
+          { id: "m2-0-2", titleKey: "ms.m2.w0.t2", status: "upcoming" },
         ],
       },
       {
-        label: "Week 6 — Isolation",
-        summary: "Per-app databases, storage, and port management",
+        labelKey: "ms.m2.w1.label",
+        summaryKey: "ms.m2.w1.summary",
         tasks: [
-          { title: "Per-app SQLite and storage namespaces", status: "upcoming" },
-          { title: "Port assignment and management", status: "upcoming" },
-          { title: "Master tracks app state and lifecycle", status: "upcoming" },
+          { id: "m2-1-0", titleKey: "ms.m2.w1.t0", status: "upcoming" },
+          { id: "m2-1-1", titleKey: "ms.m2.w1.t1", status: "upcoming" },
+          { id: "m2-1-2", titleKey: "ms.m2.w1.t2", status: "upcoming" },
         ],
       },
     ],
   },
   {
     id: "m3",
-    title: "M3 — Network Layer",
-    subtitle: "Routing, mDNS, health checks",
+    titleKey: "ms.m3.title",
+    subtitleKey: "ms.m3.subtitle",
     status: "upcoming",
-    weeks: "Weeks 7–8",
-    deliverable:
-      "Subdomain routing, service discovery, and automatic failure recovery",
+    weeksKey: "ms.m3.weeks",
+    deliverableKey: "ms.m3.deliverable",
     breakdown: [
       {
-        label: "Week 7 — Routing & Discovery",
-        summary: "Reverse proxy and mDNS",
+        labelKey: "ms.m3.w0.label",
+        summaryKey: "ms.m3.w0.summary",
         tasks: [
-          { title: "Caddy reverse proxy (subdomain routing)", status: "upcoming" },
-          { title: "mDNS service announcement and discovery", status: "upcoming" },
+          { id: "m3-0-0", titleKey: "ms.m3.w0.t0", status: "upcoming" },
+          { id: "m3-0-1", titleKey: "ms.m3.w0.t1", status: "upcoming" },
         ],
       },
       {
-        label: "Week 8 — Resilience",
-        summary: "Health monitoring and network isolation",
+        labelKey: "ms.m3.w1.label",
+        summaryKey: "ms.m3.w1.summary",
         tasks: [
-          { title: "Health checks with auto-restart", status: "upcoming" },
-          { title: "Network isolation between app containers", status: "upcoming" },
+          { id: "m3-1-0", titleKey: "ms.m3.w1.t0", status: "upcoming" },
+          { id: "m3-1-1", titleKey: "ms.m3.w1.t1", status: "upcoming" },
         ],
       },
     ],
   },
   {
     id: "m4",
-    title: "M4 — Observability & Polish",
-    subtitle: "Dashboards, docs, full demo",
+    titleKey: "ms.m4.title",
+    subtitleKey: "ms.m4.subtitle",
     status: "upcoming",
-    weeks: "Weeks 9–10",
-    deliverable:
-      "Network topology dashboard, API docs, and end-to-end demo scenario",
+    weeksKey: "ms.m4.weeks",
+    deliverableKey: "ms.m4.deliverable",
     breakdown: [
       {
-        label: "Weeks 9–10",
-        summary: "Observability tooling and final polish",
+        labelKey: "ms.m4.w0.label",
+        summaryKey: "ms.m4.w0.summary",
         tasks: [
-          { title: "Network topology dashboard", status: "upcoming" },
-          { title: "Live health status and port map", status: "upcoming" },
-          { title: "API documentation (Swagger UI)", status: "upcoming" },
-          { title: "Full end-to-end demo (offline, multi-app, auto-restart)", status: "upcoming" },
+          { id: "m4-0-0", titleKey: "ms.m4.w0.t0", status: "upcoming" },
+          { id: "m4-0-1", titleKey: "ms.m4.w0.t1", status: "upcoming" },
+          { id: "m4-0-2", titleKey: "ms.m4.w0.t2", status: "upcoming" },
+          { id: "m4-0-3", titleKey: "ms.m4.w0.t3", status: "upcoming" },
         ],
       },
     ],
   },
 ];
 
-// -----------------------------------------------------------
-//  PROJECT METADATA
-// -----------------------------------------------------------
+// Flat list of all tasks with their defaults — used for DB seeding
+export function getAllTaskDefaults() {
+  return milestones.flatMap((ms) =>
+    ms.breakdown.flatMap((w) =>
+      w.tasks.map((t) => ({ id: t.id, status: t.status }))
+    )
+  );
+}
 
 export const project = {
   name: "AppBase",
-  tagline:
-    "Self-hosted Backend-as-a-Service for LAN environments and private VPCs",
-  description:
-    "AppBase gives small organizations the same developer experience as Firebase or Supabase — auth, file storage, and a database API — without sending a single byte outside their network.",
-  repo: "https://github.com/nabilmouzouna/AppBase",
+  github: "https://github.com/NabilMouzouna/AppBase---PFE-project",
   author: "Nabil Mouzouna",
-  degree: "Network & Telecommunications Engineering",
-  university: "PFE — Final Year Project",
 };
 
 export const techStack = [

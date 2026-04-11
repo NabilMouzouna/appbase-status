@@ -14,21 +14,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AppBase — PFE Progress",
-  description:
-    "Self-hosted Backend-as-a-Service for LAN environments. Project progress tracker.",
+  description: "Self-hosted Backend-as-a-Service for LAN environments — project progress tracker.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-      <body className="min-h-screen font-sans">{children}</body>
+    <html className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen font-sans antialiased">{children}</body>
     </html>
   );
 }

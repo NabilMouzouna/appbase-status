@@ -24,63 +24,18 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Timeline connector */
-.timeline-line {
-  position: absolute;
-  left: 15px;
-  top: 40px;
-  bottom: 0;
-  width: 2px;
-  background: var(--border);
-}
-
-/* Milestone card expand/collapse */
-details summary {
-  cursor: pointer;
-  list-style: none;
-}
-
-details summary::-webkit-details-marker {
-  display: none;
-}
-
-details[open] .chevron {
-  transform: rotate(90deg);
-}
-
-.chevron {
-  transition: transform 0.2s ease;
-}
-
-/* Subtle fade-in */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.5s ease both;
-}
-
 /* Progress bar */
 .progress-track {
-  height: 6px;
+  height: 5px;
   border-radius: 3px;
   background: var(--border);
   overflow: hidden;
@@ -90,5 +45,23 @@ details[open] .chevron {
   height: 100%;
   border-radius: 3px;
   background: var(--done);
-  transition: width 0.6s ease;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Details/summary chevron */
+details summary {
+  cursor: pointer;
+}
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* RTL padding swap */
+[dir="rtl"] .ps-7 {
+  padding-inline-start: 1.75rem;
 }
