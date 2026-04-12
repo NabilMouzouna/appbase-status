@@ -6,13 +6,27 @@ export const db = createClient({
 });
 
 export async function ensureSchema() {
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS tasks (
-      id TEXT PRIMARY KEY,
-      status TEXT NOT NULL DEFAULT 'upcoming',
-      updated_at TEXT DEFAULT (datetime('now'))
-    )
-  `);
+  await db.batch([
+    {
+      sql: `CREATE TABLE IF NOT EXISTS tasks (
+        id TEXT PRIMARY KEY,
+        status TEXT NOT NULL DEFAULT 'upcoming',
+        updated_at TEXT DEFAULT (datetime('now'))
+      )`,
+      args: [],
+    },
+    {
+      sql: `CREATE TABLE IF NOT EXISTS links (
+        key TEXT PRIMARY KEY,
+        status TEXT NOT NULL DEFAULT 'unavailable',
+        url TEXT,
+        note_en TEXT,
+        note_fr TEXT,
+        updated_at TEXT DEFAULT (datetime('now'))
+      )`,
+      args: [],
+    },
+  ]);
 }
 
 export async function getTaskStatuses(): Promise<Record<string, string>> {
@@ -42,4 +56,45 @@ export async function seedDefaults(tasks: { id: string; status: string }[]) {
       args: [t.id, t.status],
     });
   }
+}
+
+// ── links (documents) ──────────────────────────────────────
+
+export interface Link {
+  key: string;
+  status: string;
+  url: string | null;
+  note_en: string | null;
+  note_fr: string | null;
+}
+
+export async function getLinks(): Promise<Link[]> {
+  await ensureSchema();
+  const result = await db.execute(
+    "SELECT key, status, url, note_en, note_fr FROM links"
+  );
+  return result.rows.map((row) => ({
+    key: row.key as string,
+    status: row.status as string,
+    url: (row.url as string) || null,
+    note_en: (row.note_en as string) || null,
+    note_fr: (row.note_fr as string) || null,
+  }));
+}
+
+export async function setLink(
+  key: string,
+  status: string,
+  url: string | null,
+  note_en: string | null,
+  note_fr: string | null
+) {
+  await ensureSchema();
+  await db.execute({
+    sql: `INSERT INTO links (key, status, url, note_en, note_fr, updated_at)
+          VALUES (?, ?, ?, ?, ?, datetime('now'))
+          ON CONFLICT(key) DO UPDATE SET
+            status = ?, url = ?, note_en = ?, note_fr = ?, updated_at = datetime('now')`,
+    args: [key, status, url, note_en, note_fr, status, url, note_en, note_fr],
+  });
 }

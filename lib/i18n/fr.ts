@@ -55,6 +55,28 @@ const fr: Dictionary = {
   "about.body":
     "AppBase est le Projet de Fin d'Études (PFE) pour un diplôme de Génie des Réseaux et Télécommunications à l'ENSA Fès. Il se situe à l'intersection du génie logiciel et du génie réseau — démontrant la conception d'API REST, l'isolation multi-applications, l'orchestration de conteneurs, la découverte de services LAN et les pipelines de données en temps réel dans une plateforme cohérente.",
 
+  "nav.overview": "Aperçu",
+  "nav.problem": "Le Problème",
+  "nav.how": "Fonctionnement",
+  "nav.progress": "Avancement",
+  "nav.milestones": "Jalons",
+  "nav.documents": "Documents",
+  "nav.tech": "Stack Technique",
+  "nav.contact": "Contact",
+
+  "documents.heading": "Documents",
+  "documents.presentation": "Présentation PFE",
+  "documents.report": "Rapport PFE",
+  "documents.status.unavailable": "Pas encore disponible",
+  "documents.status.in-progress": "En cours",
+  "documents.status.available": "Disponible",
+  "documents.open": "Ouvrir",
+
+  "contact.heading": "Contact",
+  "contact.github": "GitHub",
+  "contact.linkedin": "LinkedIn",
+  "contact.email": "Email",
+
   "footer.admin": "Mettre à jour l'avancement",
 
   "ms.planning.title": "Planification & Architecture",

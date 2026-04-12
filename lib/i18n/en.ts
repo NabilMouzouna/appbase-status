@@ -64,6 +64,31 @@ const en = {
   "about.body":
     "AppBase is the Final Year Project (PFE) for a Network & Telecommunications Engineering degree at ENSA Fès. It sits at the intersection of software engineering and network engineering — demonstrating REST API design, multi-app isolation, container orchestration, LAN service discovery, and real-time data pipelines in a single cohesive platform.",
 
+  // ── sidebar nav ──────────────────────────────────────────
+  "nav.overview": "Overview",
+  "nav.problem": "The Problem",
+  "nav.how": "How It Works",
+  "nav.progress": "Progress",
+  "nav.milestones": "Milestones",
+  "nav.documents": "Documents",
+  "nav.tech": "Tech Stack",
+  "nav.contact": "Contact",
+
+  // ── documents section ───────────────────────────────────
+  "documents.heading": "Documents",
+  "documents.presentation": "PFE Presentation",
+  "documents.report": "PFE Report",
+  "documents.status.unavailable": "Not available yet",
+  "documents.status.in-progress": "In progress",
+  "documents.status.available": "Available",
+  "documents.open": "Open",
+
+  // ── contact section ─────────────────────────────────────
+  "contact.heading": "Contact",
+  "contact.github": "GitHub",
+  "contact.linkedin": "LinkedIn",
+  "contact.email": "Email",
+
   // ── admin hint ───────────────────────────────────────────
   "footer.admin": "Update progress",
 

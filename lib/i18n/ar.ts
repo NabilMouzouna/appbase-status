@@ -55,6 +55,28 @@ const ar: Dictionary = {
   "about.body":
     "AppBase هو مشروع التخرج (PFE) لدرجة الهندسة في الشبكات والاتصالات بـ ENSA فاس. يقع عند تقاطع هندسة البرمجيات وهندسة الشبكات — يُظهر تصميم REST API، وعزل التطبيقات المتعددة، وتنسيق الحاويات، واكتشاف خدمات الشبكة المحلية، وخطوط بيانات الوقت الفعلي في منصة واحدة متماسكة.",
 
+  "nav.overview": "نظرة عامة",
+  "nav.problem": "المشكلة",
+  "nav.how": "كيف يعمل",
+  "nav.progress": "التقدم",
+  "nav.milestones": "المراحل",
+  "nav.documents": "الوثائق",
+  "nav.tech": "المكدس التقني",
+  "nav.contact": "التواصل",
+
+  "documents.heading": "الوثائق",
+  "documents.presentation": "عرض مشروع التخرج",
+  "documents.report": "تقرير مشروع التخرج",
+  "documents.status.unavailable": "غير متاح بعد",
+  "documents.status.in-progress": "قيد الإعداد",
+  "documents.status.available": "متاح",
+  "documents.open": "فتح",
+
+  "contact.heading": "التواصل",
+  "contact.github": "GitHub",
+  "contact.linkedin": "LinkedIn",
+  "contact.email": "البريد الإلكتروني",
+
   "footer.admin": "تحديث التقدم",
 
   "ms.planning.title": "التخطيط والمعمارية",
