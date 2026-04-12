@@ -278,7 +278,6 @@ type Dict = Awaited<ReturnType<typeof getDictionary>>;
 function MilestoneCard({
   milestone: ms,
   d,
-  index,
 }: {
   milestone: Milestone;
   d: Dict;
