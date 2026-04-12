@@ -118,15 +118,15 @@ export default async function LocalePage({
           </p>
         </div>
 
-        <SidebarNav items={navItems} />
+        <SidebarNav items={navItems} variant="desktop" />
 
-        <div className="mt-auto pt-8 space-y-3">
+        <div className="mt-auto pt-8 space-y-4">
           <div className="flex gap-2">
             {otherLocales.map((l) => (
               <Link
                 key={l}
                 href={`/${l}`}
-                className="text-[10px] font-medium text-muted hover:text-foreground transition-colors uppercase tracking-widest"
+                className="flex items-center justify-center w-8 h-8 rounded-full border border-border text-xs font-semibold text-muted hover:text-foreground hover:bg-zinc-100 transition-colors uppercase"
               >
                 {l}
               </Link>
@@ -134,7 +134,7 @@ export default async function LocalePage({
           </div>
           <Link
             href={`/${lang}/admin`}
-            className="text-[10px] text-muted hover:text-foreground transition-colors"
+            className="text-xs text-muted hover:text-foreground transition-colors"
           >
             {d["footer.admin"]} &rarr;
           </Link>
@@ -142,17 +142,17 @@ export default async function LocalePage({
       </aside>
 
       {/* ── mobile nav ────────────────────────────────── */}
-      <SidebarNav items={navItems} />
+      <SidebarNav items={navItems} variant="mobile" />
 
       {/* ── main content ──────────────────────────────── */}
       <main className="main-content">
         {/* ── locale switcher (mobile only) ───────────── */}
-        <div className="flex justify-end gap-3 mb-8 md:hidden">
+        <div className="flex justify-end gap-2 mb-8 md:hidden">
           {otherLocales.map((l) => (
             <Link
               key={l}
               href={`/${l}`}
-              className="text-xs font-medium text-muted hover:text-foreground transition-colors uppercase tracking-widest"
+              className="flex items-center justify-center w-8 h-8 rounded-full border border-border text-xs font-semibold text-muted hover:text-foreground hover:bg-zinc-100 transition-colors uppercase"
             >
               {l}
             </Link>
@@ -172,7 +172,7 @@ export default async function LocalePage({
               />
             </div>
 
-            <p className="text-xs font-medium uppercase tracking-widest text-muted mb-4">
+            <p className="text-sm font-medium uppercase tracking-widest text-muted mb-4">
               {d["header.badge"]}
             </p>
 
@@ -189,7 +189,7 @@ export default async function LocalePage({
               </h1>
             </div>
 
-            <p className="text-base leading-relaxed text-muted mb-5">
+            <p className="text-lg leading-relaxed text-muted mb-5">
               {d["header.tagline"]}
             </p>
 
@@ -225,17 +225,17 @@ export default async function LocalePage({
           </header>
 
           <div className="mt-10">
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-4">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-muted mb-4">
               {d["what.heading"]}
             </h2>
-            <p className="text-sm leading-7 text-muted">{d["what.p1"]}</p>
-            <p className="mt-3 text-sm leading-7 text-muted">{d["what.p2"]}</p>
+            <p className="text-base leading-8 text-muted">{d["what.p1"]}</p>
+            <p className="mt-3 text-base leading-8 text-muted">{d["what.p2"]}</p>
           </div>
         </section>
 
         {/* ── the problem ─────────────────────────────── */}
         <Section id="problem" heading={d["problem.heading"]}>
-          <p className="text-sm leading-7 text-muted mb-4">
+          <p className="text-base leading-8 text-muted mb-4">
             {d["problem.intro"]}
           </p>
           <div className="divide-y divide-border border border-border rounded-lg overflow-hidden">
@@ -284,17 +284,17 @@ export default async function LocalePage({
               <div key={row.name} className="flex gap-3 px-4 py-3 bg-white">
                 {row.icon}
                 <div className="min-w-0">
-                  <span className="text-xs font-semibold text-foreground font-mono">
+                  <span className="text-sm font-semibold text-foreground font-mono">
                     {row.name}
                   </span>
-                  <p className="text-xs text-muted leading-relaxed mt-0.5">
+                  <p className="text-sm text-muted leading-relaxed mt-0.5">
                     {d[row.key]}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-sm leading-7 text-muted border-l-2 border-foreground pl-4">
+          <p className="mt-4 text-base leading-8 text-muted border-l-2 border-foreground pl-4">
             {d["problem.gap"]}
           </p>
         </Section>
@@ -337,10 +337,10 @@ export default async function LocalePage({
               <div key={item.label} className="flex gap-3">
                 {item.icon}
                 <div>
-                  <span className="font-mono text-xs font-bold text-foreground">
+                  <span className="font-mono text-sm font-bold text-foreground">
                     {item.label}{" "}
                   </span>
-                  <span className="text-sm leading-7 text-muted">
+                  <span className="text-base leading-8 text-muted">
                     {item.text}
                   </span>
                 </div>
@@ -352,7 +352,7 @@ export default async function LocalePage({
         {/* ── progress bar ────────────────────────────── */}
         <Section id="progress" heading={d["progress.heading"]}>
           <div className="flex items-baseline justify-between mb-2">
-            <div className="flex gap-4 text-xs text-muted">
+            <div className="flex gap-4 text-sm text-muted">
               <span className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-done" />
                 {d["legend.done"]}
@@ -366,7 +366,7 @@ export default async function LocalePage({
                 {d["legend.upcoming"]}
               </span>
             </div>
-            <span className="font-mono text-xs text-muted">
+            <span className="font-mono text-sm text-muted">
               {doneTasks} {d["progress.of"]} {totalTasks} &middot; {pct}%
             </span>
           </div>
@@ -416,9 +416,9 @@ export default async function LocalePage({
             {techStack.map((t) => (
               <span
                 key={t.layer}
-                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1 font-mono text-xs text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-3 py-1.5 font-mono text-sm text-foreground"
               >
-                <span className="text-muted text-[10px]">{t.layer}</span>
+                <span className="text-muted text-xs">{t.layer}</span>
                 {t.tech}
               </span>
             ))}
@@ -429,14 +429,14 @@ export default async function LocalePage({
         <Section id="contact" heading={d["contact.heading"]}>
           <div className="space-y-4">
             <div>
-              <p className="text-sm leading-7 text-muted">
+              <p className="text-base leading-8 text-muted">
                 {d["about.body"]}
               </p>
-              <div className="mt-4 flex items-center gap-2 text-sm">
-                <HardDrive size={14} className="text-muted" />
+              <div className="mt-4 flex items-center gap-2 text-base">
+                <HardDrive size={16} className="text-muted" />
                 <span className="font-medium">{project.author}</span>
                 <span className="text-muted">&middot;</span>
-                <span className="text-muted text-xs">
+                <span className="text-muted text-sm">
                   {d["header.degree"]}
                 </span>
               </div>
@@ -475,7 +475,7 @@ export default async function LocalePage({
         </Section>
 
         {/* ── footer ──────────────────────────────────── */}
-        <footer className="mt-20 pt-6 border-t border-border flex items-center justify-between text-xs text-muted">
+        <footer className="mt-20 pt-6 border-t border-border flex items-center justify-between text-sm text-muted">
           <span>
             {project.name} &copy; {new Date().getFullYear()}
           </span>
@@ -504,7 +504,7 @@ function Section({
 }) {
   return (
     <section id={id} className="mt-14 scroll-mt-20">
-      <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-4">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-muted mb-4">
         {heading}
       </h2>
       {children}
@@ -550,17 +550,17 @@ function DocumentCard({
       {icon}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-foreground">
+          <span className="text-base font-semibold text-foreground">
             {title}
           </span>
           <span
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${statusColors[status] ?? statusColors.unavailable}`}
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[status] ?? statusColors.unavailable}`}
           >
             {statusLabel}
           </span>
         </div>
         {note && (
-          <p className="text-xs text-muted mt-0.5">{note}</p>
+          <p className="text-sm text-muted mt-0.5">{note}</p>
         )}
       </div>
       {(status === "available" || url) && url && (
@@ -568,7 +568,7 @@ function DocumentCard({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground border border-border rounded-full px-3 py-1 hover:bg-zinc-50 transition-colors shrink-0"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground border border-border rounded-full px-4 py-1.5 hover:bg-zinc-50 transition-colors shrink-0"
         >
           {d["documents.open"]}
           <ExternalLink size={11} />
@@ -601,18 +601,18 @@ function MilestoneCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-foreground">
+            <span className="text-base font-semibold text-foreground">
               {d[ms.titleKey as keyof Dict] as string}
             </span>
             <StatusBadge status={ms.status} d={d} />
           </div>
-          <p className="text-xs text-muted mt-0.5">
+          <p className="text-sm text-muted mt-0.5">
             {d[ms.subtitleKey as keyof Dict] as string}
           </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="font-mono text-xs text-muted hidden sm:block">
+          <span className="font-mono text-sm text-muted hidden sm:block">
             {done}/{allTasks.length}
           </span>
           <ChevronRight
@@ -623,7 +623,7 @@ function MilestoneCard({
       </summary>
 
       <div className="pb-5 ps-7">
-        <p className="text-xs text-muted mb-4">
+        <p className="text-sm text-muted mb-4">
           <span className="font-medium text-foreground">
             {d[ms.weeksKey as keyof Dict] as string}
           </span>
@@ -633,15 +633,15 @@ function MilestoneCard({
 
         {ms.breakdown.map((week) => (
           <div key={week.labelKey} className="mb-4 last:mb-0">
-            <p className="text-xs font-semibold text-foreground mb-0.5">
+            <p className="text-sm font-semibold text-foreground mb-0.5">
               {d[week.labelKey as keyof Dict] as string}
             </p>
-            <p className="text-xs text-muted mb-2">
+            <p className="text-sm text-muted mb-2">
               {d[week.summaryKey as keyof Dict] as string}
             </p>
-            <ul className="space-y-1.5">
+            <ul className="space-y-2">
               {week.tasks.map((task) => (
-                <li key={task.id} className="flex items-start gap-2 text-xs">
+                <li key={task.id} className="flex items-start gap-2 text-sm">
                   <TaskIcon status={task.status} />
                   <span
                     className={

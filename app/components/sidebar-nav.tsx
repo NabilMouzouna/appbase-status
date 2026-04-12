@@ -7,7 +7,13 @@ interface NavItem {
   label: string;
 }
 
-export function SidebarNav({ items }: { items: NavItem[] }) {
+export function SidebarNav({
+  items,
+  variant,
+}: {
+  items: NavItem[];
+  variant: "desktop" | "mobile";
+}) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -31,24 +37,8 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
     return () => observerRef.current?.disconnect();
   }, [items]);
 
-  return (
-    <>
-      {/* Desktop sidebar */}
-      <nav className="sidebar-nav" aria-label="Page sections">
-        <div className="space-y-0.5">
-          {items.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={activeId === item.id ? "active" : ""}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-      </nav>
-
-      {/* Mobile horizontal nav */}
+  if (variant === "mobile") {
+    return (
       <div className="mobile-nav" aria-label="Page sections">
         <div className="mobile-nav-inner">
           {items.map((item) => (
@@ -62,6 +52,22 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
           ))}
         </div>
       </div>
-    </>
+    );
+  }
+
+  return (
+    <nav className="sidebar-nav" aria-label="Page sections">
+      <div className="space-y-0.5">
+        {items.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className={activeId === item.id ? "active" : ""}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </nav>
   );
 }

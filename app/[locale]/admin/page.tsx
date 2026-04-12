@@ -35,7 +35,7 @@ interface DocLink {
 const LINK_STATUSES: LinkStatus[] = ["unavailable", "in-progress", "available"];
 
 const defaultDocs: DocLink[] = [
-  { key: "presentation", status: "unavailable", url: "", note_en: "", note_fr: "" },
+  { key: "presentation", status: "in-progress", url: "", note_en: "", note_fr: "" },
   { key: "report", status: "unavailable", url: "", note_en: "", note_fr: "" },
 ];
 
@@ -45,8 +45,12 @@ export default function AdminPage({
   params: Promise<{ locale: string }>;
 }) {
   const [locale, setLocale] = useState("en");
-  const [password, setPassword] = useState("");
-  const [authed, setAuthed] = useState(false);
+  const [password, setPassword] = useState(
+    () => (typeof window !== "undefined" && sessionStorage.getItem("admin_pw")) || ""
+  );
+  const [authed, setAuthed] = useState(
+    () => typeof window !== "undefined" && !!sessionStorage.getItem("admin_pw")
+  );
   const [error, setError] = useState("");
   const [statuses, setStatuses] = useState<Record<string, TaskStatus>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
@@ -60,11 +64,6 @@ export default function AdminPage({
 
   useEffect(() => {
     params.then(({ locale }) => setLocale(locale));
-    const saved = sessionStorage.getItem("admin_pw");
-    if (saved) {
-      setPassword(saved);
-      setAuthed(true);
-    }
   }, [params]);
 
   const fetchStatuses = useCallback(async () => {
@@ -99,8 +98,10 @@ export default function AdminPage({
 
   useEffect(() => {
     if (authed) {
-      fetchStatuses();
-      fetchLinks();
+      (async () => {
+        fetchStatuses();
+        await fetchLinks();
+      })();
     }
   }, [authed, fetchStatuses, fetchLinks]);
 
