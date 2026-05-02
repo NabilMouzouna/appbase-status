@@ -3,6 +3,19 @@ const en = {
   "meta.title": "AppBase — PFE Progress",
   "meta.description":
     "Progress tracker for AppBase, a self-hosted Backend-as-a-Service platform for LAN environments.",
+  "meta.beta": "BETA",
+  "meta.beta.title": "AppBase — Beta progress (per-app architecture)",
+
+  // ── banner ──────────────────────────────────────────────
+  "banner.message":
+    "AppBase has pivoted to a shared-services architecture.",
+  "banner.cta": "See the original beta progress →",
+  "banner.close": "Dismiss",
+
+  // ── progress / current milestone ────────────────────────
+  "progress.current": "Currently working on",
+  "progress.next": "Next up",
+  "progress.complete": "Complete",
 
   // ── header ──────────────────────────────────────────────
   "header.badge": "Final Year Project · ENSA Fès",
@@ -73,6 +86,13 @@ const en = {
   "nav.documents": "Documents",
   "nav.tech": "Tech Stack",
   "nav.contact": "Contact",
+  "nav.architecture": "Architecture",
+  "nav.what": "What is AppBase",
+  "nav.usecases": "Use cases",
+  "nav.comparison": "Comparison",
+  "nav.demo": "Demo & Docs",
+  "nav.beta": "Beta progress",
+  "nav.beta.back": "← Back to current progress",
 
   // ── documents section ───────────────────────────────────
   "documents.heading": "Documents",
@@ -182,6 +202,232 @@ const en = {
   "ms.m4.w0.t1": "Live health status and port map",
   "ms.m4.w0.t2": "API documentation (Swagger UI)",
   "ms.m4.w0.t3": "Full end-to-end demo (offline, multi-app, auto-restart)",
+
+  // ── modal ────────────────────────────────────────────────
+  "modal.title": "AppBase has pivoted to a shared-services architecture",
+  "modal.subtitle":
+    "The original \"one container per app\" design produced 1.25 GB images per app — unsustainable at five apps. The new architecture is shared, multi-tenant, and a fraction of the size.",
+  "modal.bullet1":
+    "Shared Postgres, shared auth, shared storage — one stack, many apps.",
+  "modal.bullet2":
+    "Apps are tenants in a database, not running containers. Hundreds of apps cost the same as one.",
+  "modal.bullet3":
+    "Portable, offline-first, plug-and-play — runs on any commodity machine on the LAN.",
+  "modal.cta": "View Official Architecture",
+  "modal.dismiss": "Stay on beta",
+  "modal.close": "Close",
+
+  // ── architecture page : meta + nav ───────────────────────
+  "arch.meta.title": "AppBase — Official Architecture",
+  "arch.meta.description":
+    "The shared-services, multi-tenant architecture of AppBase: components, data model, comparison with Firebase / AWS Amplify / Supabase, and use cases for clinics and schools.",
+  "nav.arch.overview": "Overview",
+  "nav.arch.why": "Why we changed",
+  "nav.arch.components": "Components",
+  "nav.arch.routing": "Routing",
+  "nav.arch.data": "Data model",
+  "nav.arch.comparison": "Comparison",
+  "nav.arch.usecases": "Use cases",
+  "nav.arch.compliance": "Compliance",
+  "nav.arch.back": "← View beta progress",
+
+  // ── architecture page : hero + why ──────────────────────
+  "arch.heading": "Official Architecture",
+  "arch.intro":
+    "AppBase is a self-hosted, shared-services backend platform for organisations that cannot send their data to the cloud. One installation per organisation, many apps as logical tenants. Runs entirely offline on commodity hardware in under ten minutes.",
+  "arch.why.heading": "Why we pivoted",
+  "arch.why.before":
+    "Before — one Docker container per app: each app produced a 1.25 GB image with its own auth, database, and storage. Five apps meant 6+ GB of duplicated services and no SSO.",
+  "arch.why.after":
+    "After — shared services: one Postgres, one auth, one storage layer. Apps are rows in a database, scoped by API key. Adding the hundredth app costs no more memory than the first.",
+
+  // ── architecture page : diagrams ─────────────────────────
+  "arch.diagram.components.title": "Component map",
+  "arch.diagram.components.caption":
+    "A single host on the LAN runs the entire stack via Docker Compose. Caddy fronts everything; tenant data is isolated at the application layer.",
+  "arch.diagram.routing.title": "Routing map",
+  "arch.diagram.routing.caption":
+    "Friendly *.{org}.local subdomains, resolved by mDNS on the LAN with CoreDNS as a production fallback.",
+  "arch.diagram.data.title": "Data model",
+  "arch.diagram.data.caption":
+    "Every row carries an org_id and an app_id. Authorization is enforced at the platform layer, not delegated to developers.",
+  "arch.node.lan": "LAN — *.{org}.local",
+  "arch.node.host": "Single host (mini-PC, server, or laptop)",
+  "arch.node.compose": "Docker Compose stack",
+  "arch.node.caddy": "Caddy",
+  "arch.node.caddy.role": "reverse proxy · 80/443",
+  "arch.node.coredns": "CoreDNS",
+  "arch.node.coredns.role": "DNS authority · *.{org}.local",
+  "arch.node.mdns": "mDNS Announcer",
+  "arch.node.mdns.role": "LAN service discovery",
+  "arch.node.api": "API Server",
+  "arch.node.api.role": "auth · db · storage",
+  "arch.node.console": "Console UI",
+  "arch.node.console.role": "Next.js admin dashboard",
+  "arch.node.postgres": "PostgreSQL",
+  "arch.node.postgres.role": "tenant-scoped data",
+  "arch.node.storage": "File Storage",
+  "arch.node.storage.role": "/var/appbase/",
+  "arch.route.console": "console.{org}.local",
+  "arch.route.console.target": "Admin dashboard",
+  "arch.route.api": "api.{org}.local",
+  "arch.route.api.target": "API Server",
+  "arch.route.app": "console.{org}.local/apps/{name}",
+  "arch.route.app.target": "Per-app developer dashboard",
+  "arch.route.frontend": "{appname}.{org}.local",
+  "arch.route.frontend.target": "Static files of deployed frontend",
+  "arch.data.org": "organizations",
+  "arch.data.org.note": "one row — the clinic / school itself",
+  "arch.data.users": "users",
+  "arch.data.users.note": "admins + end users",
+  "arch.data.apps": "apps",
+  "arch.data.apps.note": "created by admins; each gets an API key",
+  "arch.data.keys": "api_keys",
+  "arch.data.keys.note": "scoped credentials per app",
+  "arch.data.deployments": "deployments",
+  "arch.data.deployments.note": "frontend versions",
+  "arch.data.access": "user_app_access",
+  "arch.data.access.note": "which user can use which app",
+
+  // ── architecture page : comparison ───────────────────────
+  "arch.cmp.heading": "How AppBase compares",
+  "arch.cmp.intro":
+    "Existing BaaS platforms each excel on different axes. None combine offline-first operation, on-prem data residency, multi-app isolation, and zero-ops deployment for non-DevOps teams.",
+  "arch.cmp.product.appbase": "AppBase",
+  "arch.cmp.product.firebase": "Firebase",
+  "arch.cmp.product.amplify": "AWS Amplify Gen 2",
+  "arch.cmp.product.supabase": "Supabase Cloud",
+  "arch.cmp.axis.residency": "Data residency",
+  "arch.cmp.axis.compliance": "Loi 09-08 fit",
+  "arch.cmp.axis.complexity": "Setup complexity",
+  "arch.cmp.axis.footprint": "Footprint",
+  "arch.cmp.axis.isolation": "Multi-app isolation",
+  "arch.cmp.axis.lan": "LAN-native",
+  "arch.cmp.axis.plug": "Plug-and-play",
+  "arch.cmp.appbase.residency": "On-prem · LAN only",
+  "arch.cmp.appbase.compliance": "Native fit — data never leaves the premises",
+  "arch.cmp.appbase.complexity": "One install script",
+  "arch.cmp.appbase.footprint": "~500 MB total stack",
+  "arch.cmp.appbase.isolation": "Tenant-scoped at platform layer",
+  "arch.cmp.appbase.lan": "Yes — mDNS + CoreDNS",
+  "arch.cmp.appbase.plug": "Yes — under 10 minutes",
+  "arch.cmp.firebase.residency": "Google Cloud (US/EU regions)",
+  "arch.cmp.firebase.compliance": "Requires CNDP cross-border authorization (Article 43)",
+  "arch.cmp.firebase.complexity": "Low for cloud, requires internet",
+  "arch.cmp.firebase.footprint": "Cloud — no local footprint",
+  "arch.cmp.firebase.isolation": "Project-level only",
+  "arch.cmp.firebase.lan": "No — internet-dependent",
+  "arch.cmp.firebase.plug": "No — cannot run offline",
+  "arch.cmp.amplify.residency": "AWS regions (often EU/US)",
+  "arch.cmp.amplify.compliance": "Same cross-border issue · complex DPA",
+  "arch.cmp.amplify.complexity": "High — IAM, CDK, configuration",
+  "arch.cmp.amplify.footprint": "Cloud — no local footprint",
+  "arch.cmp.amplify.isolation": "Per-environment, per-stack",
+  "arch.cmp.amplify.lan": "No",
+  "arch.cmp.amplify.plug": "No — DevOps required",
+  "arch.cmp.supabase.residency": "AWS-backed regions",
+  "arch.cmp.supabase.compliance": "Same cross-border issue",
+  "arch.cmp.supabase.complexity": "Low cloud · medium self-hosted",
+  "arch.cmp.supabase.footprint": "Cloud — no local footprint",
+  "arch.cmp.supabase.isolation": "RLS policies per project",
+  "arch.cmp.supabase.lan": "No",
+  "arch.cmp.supabase.plug": "Cloud only — self-hosted needs DevOps",
+  // ── architecture page : use cases ────────────────────────
+  "arch.uc.heading": "Use cases",
+  "arch.uc.intro":
+    "Two real-world scenarios where on-prem operation is not a preference but a hard requirement.",
+  "arch.uc.clinics.title": "Clinics — patient records, scheduling, internal messaging",
+  "arch.uc.clinics.body":
+    "A 30-staff clinic in Fès needs internal applications for patient records, appointment scheduling, and prescription tracking. Patient data is sensitive personal data under loi 09-08 — sending it to Firebase or AWS would require explicit CNDP authorization for cross-border transfer, plus patient consent, plus a documented DPA. Most small clinics simply cannot navigate that process.",
+  "arch.uc.clinics.flow":
+    "With AppBase, the clinic's IT person installs one mini-PC behind the reception desk. Doctors open records.clinic.local on tablets; nurses open tasks.clinic.local on phones. SSO is automatic across apps. Pulling the internet cable proves nothing leaves the building. Backups are a single Postgres dump on a USB drive, kept in the safe.",
+  "arch.uc.schools.title": "Schools — grades, attendance, parent portal",
+  "arch.uc.schools.body":
+    "A K-12 school manages student grades, attendance, and a parent portal. Children's personal data is doubly protected — under loi 09-08 and the school's accreditation rules. Teachers want a smooth digital experience; the school director cannot afford a data breach or a CNDP investigation.",
+  "arch.uc.schools.flow":
+    "AppBase runs on a single machine in the principal's office. Teachers connect to grades.school.local from classroom laptops, attendance.school.local from tablets at the entrance. The parent portal runs on the same stack. The school's IT contractor installs once and never returns — there is no cloud account to manage, no monthly bill, no internet outage that breaks the school day.",
+
+  // ── architecture page : compliance ───────────────────────
+  "arch.law.heading": "Compliance — Loi 09-08 and data residency in Morocco",
+  "arch.law.intro":
+    "Moroccan organisations handling personal data operate under a specific legal framework. Cloud platforms designed for the US or EU markets do not address it natively.",
+  "arch.law.what":
+    "Loi 09-08, promulgated in 2009, governs the protection of natural persons with respect to the processing of personal data in Morocco. It defines personal data, sensitive data (including health data), the rights of data subjects, and the obligations of data controllers.",
+  "arch.law.cnpd":
+    "The CNDP (Commission Nationale de contrôle de la Protection des Données à caractère Personnel) is the national authority. Most data processing must be declared to the CNDP, and certain processing — particularly involving sensitive data — requires prior authorization, not just declaration.",
+  "arch.law.cloud":
+    "Article 43 of loi 09-08 prohibits the transfer of personal data to a foreign country that does not provide an adequate level of protection, unless prior authorization is obtained from the CNDP. In practice this means storing patient or student data on Firebase (US/EU regions) or AWS (Frankfurt, Ireland) requires a documented authorization process — including a DPA, the data subject's explicit consent, and CNDP review. Most small organisations never complete this process and operate in legal grey area.",
+  "arch.law.appbase":
+    "Because AppBase runs entirely on-premises, on a machine inside the organisation's own network, no cross-border transfer occurs. The legal question that blocks cloud adoption simply does not arise. This is the architectural reason AppBase exists, not a marketing afterthought.",
+  "arch.law.disclaimer":
+    "This page is informational and reflects the author's reading of public legal sources. It is not legal advice. Organisations subject to loi 09-08 should consult a qualified Moroccan data protection lawyer for their specific case.",
+
+  // ── new milestones (post-pivot) ──────────────────────────
+  "ms.core.title": "Core BaaS",
+  "ms.core.subtitle": "Auth, database, storage, real-time, SDK",
+  "ms.core.weeks": "Weeks 1–4",
+  "ms.core.deliverable": "Working backend with SDK consumed by a demo app",
+  "ms.core.w0.label": "Backend foundation",
+  "ms.core.w0.summary": "All four BaaS primitives shipped on a single API",
+  "ms.core.t.auth": "better-auth (sessions, API keys)",
+  "ms.core.t.db": "Database (collections + CRUD)",
+  "ms.core.t.storage": "Storage (buckets, scoped uploads)",
+  "ms.core.t.realtime": "Real-time (SSE on collections)",
+  "ms.core.t.sdk": "SDK (auth, db, storage, subscribe)",
+
+  "ms.ops.title": "Networking & DevOps",
+  "ms.ops.subtitle": "Routing, mDNS, reverse proxy, compose, CLI, health",
+  "ms.ops.weeks": "Weeks 5–7",
+  "ms.ops.deliverable": "console.{org}.local reachable from any device on the LAN",
+  "ms.ops.w0.label": "Infrastructure",
+  "ms.ops.w0.summary":
+    "Wire the components together so the platform comes up with a single docker-compose up and resolves over the LAN.",
+  "ms.ops.t.routing": "Caddy reverse-proxy + subdomain routing",
+  "ms.ops.t.mdns": "mDNS + CoreDNS for *.local resolution",
+  "ms.ops.t.compose": "docker-compose orchestrating the full stack",
+  "ms.ops.t.cli": "Config CLI (init, status, deploy)",
+  "ms.ops.t.health": "Health checks across services",
+  "ms.ops.t.console": "console.{org}.local reachable from any LAN device",
+
+  "ms.finals.title": "Final touches",
+  "ms.finals.subtitle": "Wire BaaS into Ops; single-instance refactor",
+  "ms.finals.weeks": "Week 8",
+  "ms.finals.deliverable": "BaaS runs as part of the orchestrated stack",
+  "ms.finals.w0.label": "Integration",
+  "ms.finals.w0.summary":
+    "Connect the existing BaaS server into the new Ops infrastructure and refactor toward a single-instance model where time permits.",
+  "ms.finals.t.wire": "Connect AppBase BaaS into the Ops infrastructure",
+  "ms.finals.t.single": "Configure as single-instance (refactor if time permits)",
+
+  "ms.demo.title": "Demo & Docs",
+  "ms.demo.subtitle": "Install guide, SDK docs, walkthrough video",
+  "ms.demo.weeks": "Week 9",
+  "ms.demo.deliverable": "Reproducible install + recorded demo of the working flow",
+  "ms.demo.w0.label": "Hand-off",
+  "ms.demo.w0.summary":
+    "Everything someone else needs to install AppBase, build against it, and see it work on a local environment.",
+  "ms.demo.t.install": "Install AppBase guide + repo link",
+  "ms.demo.t.sdk": "AppBase SDK docs",
+  "ms.demo.t.video": "Walkthrough video on local environment",
+
+  // ── home: hero ──────────────────────────────────────────
+  "home.hero.eyebrow": "Final Year Project · ENSA Fès",
+  "home.hero.heading": "A Backend-as-a-Service that lives on your LAN.",
+  "home.hero.subhead":
+    "AppBase gives clinics, schools, and small offices the same developer experience as Firebase — except every byte stays on a machine they own.",
+
+  // ── home: demo & docs section ───────────────────────────
+  "demo.heading": "Demo & Documentation",
+  "demo.intro":
+    "Once Ops and Final touches land, this section will host the install guide, the SDK reference, and a video walkthrough on a local environment.",
+  "demo.install.title": "Install AppBase",
+  "demo.install.body": "One-line install + Docker Compose stack on any LAN host.",
+  "demo.sdk.title": "AppBase SDK",
+  "demo.sdk.body": "TypeScript SDK for auth, database, storage, and real-time.",
+  "demo.video.title": "Walkthrough video",
+  "demo.video.body": "End-to-end demo recorded on a local environment.",
+  "demo.coming": "Coming soon",
+  "demo.open": "Open",
 };
 
 export default en;

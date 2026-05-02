@@ -1,15 +1,19 @@
 // ============================================================
-// STRUCTURE ONLY — statuses are stored in Turso and merged
-// at request time. Task `id` fields are the DB primary keys.
+// MAIN progress tree — shared-services architecture (post-pivot).
+// Statuses are stored in Turso and merged at request time.
+// Task `id` fields are the DB primary keys.
+//
+// The previous per-app architecture progress is preserved in
+// ./milestones-beta.ts and rendered on /[locale]/beta.
 // ============================================================
 
 export type TaskStatus = "done" | "in-progress" | "upcoming";
 
 export interface Task {
   id: string;
-  titleKey: string; // translation key
-  label: string; // human-readable label for admin display
-  status: TaskStatus; // default; overridden by DB at runtime
+  titleKey: string;
+  label: string;
+  status: TaskStatus;
 }
 
 export interface Week {
@@ -22,7 +26,7 @@ export interface Milestone {
   id: string;
   titleKey: string;
   subtitleKey: string;
-  status: TaskStatus; // derived from tasks at runtime
+  status: TaskStatus;
   weeksKey: string;
   deliverableKey: string;
   breakdown: Week[];
@@ -72,130 +76,87 @@ export const milestones: Milestone[] = [
     ],
   },
   {
-    id: "m1",
-    titleKey: "ms.m1.title",
-    subtitleKey: "ms.m1.subtitle",
+    id: "core",
+    titleKey: "ms.core.title",
+    subtitleKey: "ms.core.subtitle",
     status: "done",
-    weeksKey: "ms.m1.weeks",
-    deliverableKey: "ms.m1.deliverable",
+    weeksKey: "ms.core.weeks",
+    deliverableKey: "ms.core.deliverable",
     breakdown: [
       {
-        labelKey: "ms.m1.w0.label",
-        summaryKey: "ms.m1.w0.summary",
+        labelKey: "ms.core.w0.label",
+        summaryKey: "ms.core.w0.summary",
         tasks: [
-          { id: "m1-0-0", titleKey: "ms.m1.w0.t0", label: "better-auth integration (register, login, refresh)", status: "done" },
-          { id: "m1-0-1", titleKey: "ms.m1.w0.t1", label: "API key issuance and validation middleware", status: "done" },
-          { id: "m1-0-2", titleKey: "ms.m1.w0.t2", label: "SDK auth module", status: "done" },
-        ],
-      },
-      {
-        labelKey: "ms.m1.w1.label",
-        summaryKey: "ms.m1.w1.summary",
-        tasks: [
-          { id: "m1-1-0", titleKey: "ms.m1.w1.t0", label: "Collection management endpoints", status: "done" },
-          { id: "m1-1-1", titleKey: "ms.m1.w1.t1", label: "Full CRUD on records", status: "done" },
-          { id: "m1-1-2", titleKey: "ms.m1.w1.t2", label: "SDK db module", status: "done" },
-          { id: "m1-1-3", titleKey: "ms.m1.w1.t3", label: "Demo app stores & retrieves data", status: "done" },
-        ],
-      },
-      {
-        labelKey: "ms.m1.w2.label",
-        summaryKey: "ms.m1.w2.summary",
-        tasks: [
-          { id: "m1-2-0", titleKey: "ms.m1.w2.t0", label: "Bucket-based upload/download endpoints", status: "done" },
-          { id: "m1-2-1", titleKey: "ms.m1.w2.t1", label: "File scoping per user", status: "done" },
-          { id: "m1-2-2", titleKey: "ms.m1.w2.t2", label: "SDK storage module", status: "done" },
-        ],
-      },
-      {
-        labelKey: "ms.m1.w3.label",
-        summaryKey: "ms.m1.w3.summary",
-        tasks: [
-          { id: "m1-3-0", titleKey: "ms.m1.w3.t0", label: "SSE real-time on DB collections", status: "done" },
-          { id: "m1-3-1", titleKey: "ms.m1.w3.t1", label: "SDK subscribe() method", status: "done" },
-          { id: "m1-3-2", titleKey: "ms.m1.w3.t2", label: "App-specific admin dashboard", status: "done" },
-          { id: "m1-3-3", titleKey: "ms.m1.w3.t3", label: "Docker packaging (single docker run)", status: "done" },
+          { id: "core-auth", titleKey: "ms.core.t.auth", label: "better-auth (sessions, API keys)", status: "done" },
+          { id: "core-db", titleKey: "ms.core.t.db", label: "Database (collections + CRUD)", status: "done" },
+          { id: "core-storage", titleKey: "ms.core.t.storage", label: "Storage (buckets, scoped uploads)", status: "done" },
+          { id: "core-realtime", titleKey: "ms.core.t.realtime", label: "Real-time (SSE on collections)", status: "done" },
+          { id: "core-sdk", titleKey: "ms.core.t.sdk", label: "SDK (auth, db, storage, subscribe)", status: "done" },
         ],
       },
     ],
   },
   {
-    id: "m2",
-    titleKey: "ms.m2.title",
-    subtitleKey: "ms.m2.subtitle",
-    status: "upcoming",
-    weeksKey: "ms.m2.weeks",
-    deliverableKey: "ms.m2.deliverable",
+    id: "ops",
+    titleKey: "ms.ops.title",
+    subtitleKey: "ms.ops.subtitle",
+    status: "in-progress",
+    weeksKey: "ms.ops.weeks",
+    deliverableKey: "ms.ops.deliverable",
     breakdown: [
       {
-        labelKey: "ms.m2.w0.label",
-        summaryKey: "ms.m2.w0.summary",
+        labelKey: "ms.ops.w0.label",
+        summaryKey: "ms.ops.w0.summary",
         tasks: [
-          { id: "m2-0-0", titleKey: "ms.m2.w0.t0", label: "Master control plane at appbase.local", status: "upcoming" },
-          { id: "m2-0-1", titleKey: "ms.m2.w0.t1", label: "App provisioning / deletion service", status: "upcoming" },
-          { id: "m2-0-2", titleKey: "ms.m2.w0.t2", label: "Docker SDK integration (dockerode)", status: "upcoming" },
-        ],
-      },
-      {
-        labelKey: "ms.m2.w1.label",
-        summaryKey: "ms.m2.w1.summary",
-        tasks: [
-          { id: "m2-1-0", titleKey: "ms.m2.w1.t0", label: "Per-app SQLite and storage namespaces", status: "upcoming" },
-          { id: "m2-1-1", titleKey: "ms.m2.w1.t1", label: "Port assignment and management", status: "upcoming" },
-          { id: "m2-1-2", titleKey: "ms.m2.w1.t2", label: "Master tracks app state and lifecycle", status: "upcoming" },
+          { id: "ops-routing", titleKey: "ms.ops.t.routing", label: "Caddy reverse-proxy + subdomain routing", status: "in-progress" },
+          { id: "ops-mdns", titleKey: "ms.ops.t.mdns", label: "mDNS + CoreDNS for *.local resolution", status: "upcoming" },
+          { id: "ops-compose", titleKey: "ms.ops.t.compose", label: "docker-compose orchestrating the full stack", status: "upcoming" },
+          { id: "ops-cli", titleKey: "ms.ops.t.cli", label: "Config CLI (init, status, deploy)", status: "upcoming" },
+          { id: "ops-health", titleKey: "ms.ops.t.health", label: "Health checks across services", status: "upcoming" },
+          { id: "ops-console", titleKey: "ms.ops.t.console", label: "console.{org}.local reachable from any LAN device", status: "upcoming" },
         ],
       },
     ],
   },
   {
-    id: "m3",
-    titleKey: "ms.m3.title",
-    subtitleKey: "ms.m3.subtitle",
+    id: "finals",
+    titleKey: "ms.finals.title",
+    subtitleKey: "ms.finals.subtitle",
     status: "upcoming",
-    weeksKey: "ms.m3.weeks",
-    deliverableKey: "ms.m3.deliverable",
+    weeksKey: "ms.finals.weeks",
+    deliverableKey: "ms.finals.deliverable",
     breakdown: [
       {
-        labelKey: "ms.m3.w0.label",
-        summaryKey: "ms.m3.w0.summary",
+        labelKey: "ms.finals.w0.label",
+        summaryKey: "ms.finals.w0.summary",
         tasks: [
-          { id: "m3-0-0", titleKey: "ms.m3.w0.t0", label: "Caddy reverse proxy (subdomain routing)", status: "upcoming" },
-          { id: "m3-0-1", titleKey: "ms.m3.w0.t1", label: "mDNS service announcement and discovery", status: "upcoming" },
-        ],
-      },
-      {
-        labelKey: "ms.m3.w1.label",
-        summaryKey: "ms.m3.w1.summary",
-        tasks: [
-          { id: "m3-1-0", titleKey: "ms.m3.w1.t0", label: "Health checks with auto-restart", status: "upcoming" },
-          { id: "m3-1-1", titleKey: "ms.m3.w1.t1", label: "Network isolation between app containers", status: "upcoming" },
+          { id: "finals-wire", titleKey: "ms.finals.t.wire", label: "Connect AppBase BaaS into the Ops infrastructure", status: "upcoming" },
+          { id: "finals-single", titleKey: "ms.finals.t.single", label: "Configure as single-instance (refactor if time permits)", status: "upcoming" },
         ],
       },
     ],
   },
   {
-    id: "m4",
-    titleKey: "ms.m4.title",
-    subtitleKey: "ms.m4.subtitle",
+    id: "demo",
+    titleKey: "ms.demo.title",
+    subtitleKey: "ms.demo.subtitle",
     status: "upcoming",
-    weeksKey: "ms.m4.weeks",
-    deliverableKey: "ms.m4.deliverable",
+    weeksKey: "ms.demo.weeks",
+    deliverableKey: "ms.demo.deliverable",
     breakdown: [
       {
-        labelKey: "ms.m4.w0.label",
-        summaryKey: "ms.m4.w0.summary",
+        labelKey: "ms.demo.w0.label",
+        summaryKey: "ms.demo.w0.summary",
         tasks: [
-          { id: "m4-0-0", titleKey: "ms.m4.w0.t0", label: "Network topology dashboard", status: "upcoming" },
-          { id: "m4-0-1", titleKey: "ms.m4.w0.t1", label: "Live health status and port map", status: "upcoming" },
-          { id: "m4-0-2", titleKey: "ms.m4.w0.t2", label: "API documentation (Swagger UI)", status: "upcoming" },
-          { id: "m4-0-3", titleKey: "ms.m4.w0.t3", label: "Full end-to-end demo (offline, multi-app, auto-restart)", status: "upcoming" },
+          { id: "demo-install", titleKey: "ms.demo.t.install", label: "Install AppBase guide + repo link", status: "upcoming" },
+          { id: "demo-sdk", titleKey: "ms.demo.t.sdk", label: "AppBase SDK docs", status: "upcoming" },
+          { id: "demo-video", titleKey: "ms.demo.t.video", label: "Walkthrough video on local environment", status: "upcoming" },
         ],
       },
     ],
   },
 ];
 
-// Flat list of all tasks with their defaults — used for DB seeding
 export function getAllTaskDefaults() {
   return milestones.flatMap((ms) =>
     ms.breakdown.flatMap((w) =>
@@ -218,12 +179,12 @@ export const techStack = [
   { layer: "API", tech: "Fastify" },
   { layer: "Auth", tech: "better-auth" },
   { layer: "ORM", tech: "Drizzle" },
-  { layer: "Database", tech: "SQLite" },
+  { layer: "Database", tech: "Postgres" },
   { layer: "Frontend", tech: "Next.js" },
   { layer: "Real-time", tech: "SSE" },
-  { layer: "Containers", tech: "Docker" },
+  { layer: "Containers", tech: "Docker Compose" },
   { layer: "Proxy", tech: "Caddy" },
-  { layer: "Discovery", tech: "mDNS" },
+  { layer: "DNS", tech: "CoreDNS + mDNS" },
   { layer: "Monorepo", tech: "Turborepo" },
   { layer: "Testing", tech: "Vitest + Playwright" },
 ];
