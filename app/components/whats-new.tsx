@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X, Sparkles } from "lucide-react";
-
-const STORAGE_KEY = "appbase.whatsNewDismissed";
 
 export interface WhatsNewItem {
   id: string;
@@ -24,18 +22,7 @@ export function WhatsNew({
   title: string;
   closeLabel: string;
 }) {
-  const [open, setOpen] = useState(false);
-
-  const signature = items.map((i) => i.id).join(",");
-
-  useEffect(() => {
-    if (items.length === 0) {
-      setOpen(false);
-      return;
-    }
-    const dismissed = window.localStorage.getItem(STORAGE_KEY);
-    if (dismissed !== signature) setOpen(true);
-  }, [signature, items.length]);
+  const [open, setOpen] = useState(true);
 
   if (!open || items.length === 0) return null;
 
@@ -45,11 +32,6 @@ export function WhatsNew({
     if (lang === "fr") return item.message_fr || item.message_en;
     if (lang === "ar") return item.message_ar || item.message_en;
     return item.message_en;
-  }
-
-  function handleClose() {
-    setOpen(false);
-    window.localStorage.setItem(STORAGE_KEY, signature);
   }
 
   return (
@@ -71,7 +53,7 @@ export function WhatsNew({
         <button
           type="button"
           aria-label={closeLabel}
-          onClick={handleClose}
+          onClick={() => setOpen(false)}
           className="rounded-full p-1 text-muted hover:bg-zinc-100 hover:text-foreground transition-colors"
         >
           <X size={14} />
