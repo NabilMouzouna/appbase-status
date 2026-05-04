@@ -12,6 +12,10 @@ const en = {
   "banner.cta": "See the original beta progress →",
   "banner.close": "Dismiss",
 
+  // ── what's new (notifications popup) ────────────────────
+  "whatsnew.title": "What's new",
+  "whatsnew.close": "Close",
+
   // ── progress / current milestone ────────────────────────
   "progress.current": "Currently working on",
   "progress.next": "Next up",

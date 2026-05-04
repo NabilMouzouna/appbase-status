@@ -12,6 +12,9 @@ const fr: Dictionary = {
   "banner.cta": "Voir l'avancement Beta d'origine →",
   "banner.close": "Ignorer",
 
+  "whatsnew.title": "Quoi de neuf",
+  "whatsnew.close": "Fermer",
+
   "progress.current": "En cours actuellement",
   "progress.next": "Prochaine étape",
   "progress.complete": "Terminé",

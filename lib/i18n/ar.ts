@@ -12,6 +12,9 @@ const ar: Dictionary = {
   "banner.cta": "عرض التقدم التجريبي الأصلي ←",
   "banner.close": "تجاهل",
 
+  "whatsnew.title": "ما الجديد",
+  "whatsnew.close": "إغلاق",
+
   "progress.current": "العمل الحالي",
   "progress.next": "الخطوة التالية",
   "progress.complete": "مكتمل",

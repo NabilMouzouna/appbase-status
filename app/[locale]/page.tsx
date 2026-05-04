@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import { getDictionary, isLocale, locales } from "../../lib/i18n/dictionaries";
 import type { Locale } from "../../lib/i18n/dictionaries";
-import { getTaskStatuses, getLinks } from "../../lib/db";
-import type { Link as DBLink } from "../../lib/db";
+import { getTaskStatuses, getLinks, getNotifications } from "../../lib/db";
+import type { Link as DBLink, Notification } from "../../lib/db";
 import { milestones, project } from "../data/milestones";
 import type { Milestone, TaskStatus } from "../data/milestones";
 import { SidebarNav } from "../components/sidebar-nav";
 import { Banner } from "../components/banner";
+import { WhatsNew } from "../components/whats-new";
 import {
   ComponentMap,
   RoutingMap,
@@ -98,9 +99,10 @@ export default async function HomePage({
   const lang = isLocale(locale) ? (locale as Locale) : "en";
   const d = await getDictionary(lang);
 
-  const [dbStatuses, dbLinks] = await Promise.all([
+  const [dbStatuses, dbLinks, dbNotifications] = await Promise.all([
     getTaskStatuses().catch(() => ({}) as Record<string, string>),
     getLinks().catch(() => [] as DBLink[]),
+    getNotifications(true).catch(() => [] as Notification[]),
   ]);
 
   const data = applyStatuses(milestones, dbStatuses);
@@ -147,6 +149,19 @@ export default async function HomePage({
         ctaLabel={d["banner.cta"]}
         ctaHref={`/${lang}/beta`}
         closeLabel={d["banner.close"]}
+      />
+
+      <WhatsNew
+        items={dbNotifications.map((n) => ({
+          id: n.id,
+          message_en: n.message_en,
+          message_fr: n.message_fr,
+          message_ar: n.message_ar,
+          created_at: n.created_at,
+        }))}
+        lang={lang}
+        title={d["whatsnew.title"]}
+        closeLabel={d["whatsnew.close"]}
       />
 
       <div className="layout-wrapper" dir={lang === "ar" ? "rtl" : "ltr"}>

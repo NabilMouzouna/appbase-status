@@ -12,6 +12,9 @@ import {
   Save,
   FileText,
   FileSpreadsheet,
+  Plus,
+  Trash2,
+  Sparkles,
 } from "lucide-react";
 import { milestones } from "../../data/milestones";
 import type { TaskStatus } from "../../data/milestones";
@@ -39,6 +42,20 @@ const defaultDocs: DocLink[] = [
   { key: "report", status: "unavailable", url: "", note_en: "", note_fr: "" },
 ];
 
+interface Notification {
+  id: string;
+  message_en: string;
+  message_fr: string;
+  message_ar: string;
+  active: boolean;
+}
+
+const emptyNotificationDraft = {
+  message_en: "",
+  message_fr: "",
+  message_ar: "",
+};
+
 export default function AdminPage({
   params,
 }: {
@@ -52,6 +69,7 @@ export default function AdminPage({
     () => typeof window !== "undefined" && !!sessionStorage.getItem("admin_pw")
   );
   const [error, setError] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, TaskStatus>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
   const [seeding, setSeeding] = useState(false);
@@ -61,6 +79,13 @@ export default function AdminPage({
   const [docs, setDocs] = useState<DocLink[]>(defaultDocs);
   const [docSaving, setDocSaving] = useState<Record<string, boolean>>({});
   const [docMsg, setDocMsg] = useState<Record<string, string>>({});
+
+  // Notifications state
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifDraft, setNotifDraft] = useState(emptyNotificationDraft);
+  const [notifBusy, setNotifBusy] = useState<Record<string, boolean>>({});
+  const [notifCreating, setNotifCreating] = useState(false);
+  const [notifError, setNotifError] = useState("");
 
   useEffect(() => {
     params.then(({ locale }) => setLocale(locale));
@@ -96,21 +121,69 @@ export default function AdminPage({
     }
   }, []);
 
-  useEffect(() => {
-    if (authed) {
-      (async () => {
-        fetchStatuses();
-        await fetchLinks();
-      })();
+  const fetchNotifications = useCallback(async (pw: string) => {
+    const res = await fetch("/api/notifications", {
+      headers: { Authorization: `Bearer ${pw}` },
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      setNotifications(
+        data.map((n) => ({
+          id: n.id,
+          message_en: n.message_en ?? "",
+          message_fr: n.message_fr ?? "",
+          message_ar: n.message_ar ?? "",
+          active: !!n.active,
+        }))
+      );
     }
-  }, [authed, fetchStatuses, fetchLinks]);
+  }, []);
 
-  function handleLogin(e: React.FormEvent) {
+  useEffect(() => {
+    if (!authed) return;
+    (async () => {
+      const verify = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${password}` },
+      });
+      if (verify.status === 401) {
+        sessionStorage.removeItem("admin_pw");
+        setAuthed(false);
+        setError("Session expired. Please sign in again.");
+        return;
+      }
+      fetchStatuses();
+      await fetchLinks();
+      await fetchNotifications(password);
+    })();
+  }, [authed, fetchStatuses, fetchLinks, fetchNotifications, password]);
+
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (!password.trim()) return;
-    sessionStorage.setItem("admin_pw", password);
-    setAuthed(true);
+    if (!password.trim() || loggingIn) return;
+    setLoggingIn(true);
     setError("");
+    try {
+      const res = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${password}` },
+      });
+      if (res.ok) {
+        sessionStorage.setItem("admin_pw", password);
+        setAuthed(true);
+      } else if (res.status === 401) {
+        sessionStorage.removeItem("admin_pw");
+        setAuthed(false);
+        setError("Wrong password.");
+      } else {
+        setError("Login failed. Try again.");
+      }
+    } catch {
+      setError("Network error. Try again.");
+    } finally {
+      setLoggingIn(false);
+    }
   }
 
   async function toggleTask(id: string, current: TaskStatus) {
@@ -170,6 +243,77 @@ export default function AdminPage({
     );
   }
 
+  async function createNotification() {
+    setNotifError("");
+    if (!notifDraft.message_en.trim()) {
+      setNotifError("English message is required.");
+      return;
+    }
+    setNotifCreating(true);
+    const res = await fetch("/api/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${password}`,
+      },
+      body: JSON.stringify({
+        message_en: notifDraft.message_en,
+        message_fr: notifDraft.message_fr,
+        message_ar: notifDraft.message_ar,
+        active: true,
+      }),
+    });
+    setNotifCreating(false);
+    if (res.status === 401) {
+      setError("Wrong password.");
+      setAuthed(false);
+      sessionStorage.removeItem("admin_pw");
+      return;
+    }
+    if (res.ok) {
+      setNotifDraft(emptyNotificationDraft);
+      await fetchNotifications(password);
+    } else {
+      setNotifError("Failed to create notification.");
+    }
+  }
+
+  async function toggleNotification(n: Notification) {
+    setNotifBusy((b) => ({ ...b, [n.id]: true }));
+    const res = await fetch("/api/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${password}`,
+      },
+      body: JSON.stringify({
+        id: n.id,
+        message_en: n.message_en,
+        message_fr: n.message_fr,
+        message_ar: n.message_ar,
+        active: !n.active,
+      }),
+    });
+    if (res.ok) {
+      setNotifications((prev) =>
+        prev.map((x) => (x.id === n.id ? { ...x, active: !x.active } : x))
+      );
+    }
+    setNotifBusy((b) => ({ ...b, [n.id]: false }));
+  }
+
+  async function removeNotification(id: string) {
+    setNotifBusy((b) => ({ ...b, [id]: true }));
+    const res = await fetch(`/api/notifications?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${password}` },
+    });
+    if (res.ok) {
+      setNotifications((prev) => prev.filter((x) => x.id !== id));
+    }
+    setNotifBusy((b) => ({ ...b, [id]: false }));
+  }
+
   async function seed() {
     setSeeding(true);
     setSeedMsg("");
@@ -211,9 +355,15 @@ export default function AdminPage({
             {error && <p className="text-xs text-red-500">{error}</p>}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-foreground text-background rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity"
+              disabled={loggingIn}
+              className="w-full flex items-center justify-center gap-2 bg-foreground text-background rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
-              <LogIn size={14} /> Sign in
+              {loggingIn ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <LogIn size={14} />
+              )}
+              Sign in
             </button>
           </form>
         </div>
@@ -241,6 +391,7 @@ export default function AdminPage({
             onClick={() => {
               fetchStatuses();
               fetchLinks();
+              fetchNotifications(password);
             }}
             className="p-1.5 rounded border border-border hover:bg-zinc-50 transition-colors"
             title="Refresh"
@@ -248,6 +399,128 @@ export default function AdminPage({
             <RefreshCw size={13} className="text-muted" />
           </button>
         </div>
+      </div>
+
+      {/* ── What's New / Notifications ────────────────── */}
+      <div className="mb-10">
+        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-4 flex items-center gap-1.5">
+          <Sparkles size={12} /> What&apos;s New (popup)
+        </h2>
+
+        <div className="border border-border rounded-lg p-4 bg-white mb-3">
+          <p className="text-[11px] text-muted mb-3">
+            Add a new notification. Shown bottom-right of the home page.
+            English is required; FR / AR fall back to English when empty.
+          </p>
+          <div className="grid gap-2">
+            <textarea
+              value={notifDraft.message_en}
+              onChange={(e) =>
+                setNotifDraft((d) => ({ ...d, message_en: e.target.value }))
+              }
+              placeholder="Message in English (required)"
+              rows={2}
+              className="w-full rounded-md border border-border px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-zinc-300 bg-white resize-none"
+            />
+            <textarea
+              value={notifDraft.message_fr}
+              onChange={(e) =>
+                setNotifDraft((d) => ({ ...d, message_fr: e.target.value }))
+              }
+              placeholder="Message en francais (optionnel)"
+              rows={2}
+              className="w-full rounded-md border border-border px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-zinc-300 bg-white resize-none"
+            />
+            <textarea
+              value={notifDraft.message_ar}
+              onChange={(e) =>
+                setNotifDraft((d) => ({ ...d, message_ar: e.target.value }))
+              }
+              placeholder="رسالة بالعربية (اختياري)"
+              rows={2}
+              dir="rtl"
+              className="w-full rounded-md border border-border px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-zinc-300 bg-white resize-none"
+            />
+            {notifError && (
+              <p className="text-xs text-red-500">{notifError}</p>
+            )}
+            <div className="flex justify-end">
+              <button
+                onClick={createNotification}
+                disabled={notifCreating}
+                className="inline-flex items-center gap-1.5 rounded-md bg-foreground text-background px-3 py-1.5 text-xs font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+              >
+                {notifCreating ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <Plus size={12} />
+                )}
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {notifications.length === 0 ? (
+          <p className="text-xs text-muted px-1">No notifications yet.</p>
+        ) : (
+          <ul className="space-y-2">
+            {notifications.map((n) => (
+              <li
+                key={n.id}
+                className="border border-border rounded-lg p-3 bg-white flex items-start gap-3"
+              >
+                <div className="flex-1 min-w-0 space-y-1">
+                  <p
+                    className={`text-xs ${n.active ? "text-foreground" : "text-muted line-through"}`}
+                  >
+                    <span className="font-semibold">EN:</span> {n.message_en}
+                  </p>
+                  {n.message_fr && (
+                    <p
+                      className={`text-xs ${n.active ? "text-foreground" : "text-muted line-through"}`}
+                    >
+                      <span className="font-semibold">FR:</span> {n.message_fr}
+                    </p>
+                  )}
+                  {n.message_ar && (
+                    <p
+                      dir="rtl"
+                      className={`text-xs ${n.active ? "text-foreground" : "text-muted line-through"}`}
+                    >
+                      <span className="font-semibold">AR:</span> {n.message_ar}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => toggleNotification(n)}
+                    disabled={notifBusy[n.id]}
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors ${
+                      n.active
+                        ? "bg-green-100 text-green-800 hover:bg-green-200"
+                        : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
+                    } disabled:opacity-50`}
+                  >
+                    {n.active ? "active" : "hidden"}
+                  </button>
+                  <button
+                    onClick={() => removeNotification(n.id)}
+                    disabled={notifBusy[n.id]}
+                    className="p-1.5 rounded text-muted hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                    title="Delete"
+                  >
+                    {notifBusy[n.id] ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                      <Trash2 size={12} />
+                    )}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* ── Documents ─────────────────────────────────── */}

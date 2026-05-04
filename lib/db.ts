@@ -9,6 +9,15 @@ export interface Link {
   note_fr: string | null;
 }
 
+export interface Notification {
+  id: string;
+  message_en: string;
+  message_fr: string | null;
+  message_ar: string | null;
+  active: boolean;
+  created_at: string | null;
+}
+
 type TursoArg = { type: "text"; value: string } | { type: "null" };
 
 interface TursoStmt {
@@ -77,6 +86,16 @@ const SCHEMA_STMTS: TursoStmt[] = [
       updated_at TEXT DEFAULT (datetime('now'))
     )`,
   },
+  {
+    sql: `CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      message_en TEXT NOT NULL,
+      message_fr TEXT,
+      message_ar TEXT,
+      active TEXT NOT NULL DEFAULT '1',
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+  },
 ];
 
 let schemaEnsured = false;
@@ -135,6 +154,52 @@ export async function getLinks(): Promise<Link[]> {
     note_en: row[3]?.value ?? null,
     note_fr: row[4]?.value ?? null,
   }));
+}
+
+export async function getNotifications(activeOnly = false): Promise<Notification[]> {
+  await ensureSchema();
+  const sql = activeOnly
+    ? "SELECT id, message_en, message_fr, message_ar, active, created_at FROM notifications WHERE active = '1' ORDER BY created_at DESC"
+    : "SELECT id, message_en, message_fr, message_ar, active, created_at FROM notifications ORDER BY created_at DESC";
+  const [rows] = await pipeline([{ sql }]);
+  return rows.map((row) => ({
+    id: row[0]?.value ?? "",
+    message_en: row[1]?.value ?? "",
+    message_fr: row[2]?.value ?? null,
+    message_ar: row[3]?.value ?? null,
+    active: (row[4]?.value ?? "0") === "1",
+    created_at: row[5]?.value ?? null,
+  }));
+}
+
+export async function upsertNotification(
+  id: string,
+  message_en: string,
+  message_fr: string | null,
+  message_ar: string | null,
+  active: boolean
+) {
+  await ensureSchema();
+  const activeStr = active ? "1" : "0";
+  await pipeline([
+    {
+      sql: `INSERT INTO notifications (id, message_en, message_fr, message_ar, active)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+              message_en = ?, message_fr = ?, message_ar = ?, active = ?`,
+      args: [
+        arg(id), arg(message_en), arg(message_fr), arg(message_ar), arg(activeStr),
+        arg(message_en), arg(message_fr), arg(message_ar), arg(activeStr),
+      ],
+    },
+  ]);
+}
+
+export async function deleteNotification(id: string) {
+  await ensureSchema();
+  await pipeline([
+    { sql: "DELETE FROM notifications WHERE id = ?", args: [arg(id)] },
+  ]);
 }
 
 export async function setLink(
