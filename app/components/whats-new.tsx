@@ -81,7 +81,7 @@ export function WhatsNew({
         {items.map((item) => (
           <li
             key={item.id}
-            className="rounded-lg px-3 py-2.5 text-sm leading-relaxed text-foreground hover:bg-zinc-50"
+            className="rounded-lg px-3 py-2.5 text-sm leading-relaxed text-foreground hover:bg-zinc-50 whitespace-pre-line"
           >
             {pickMessage(item)}
           </li>

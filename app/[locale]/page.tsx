@@ -29,6 +29,8 @@ import {
   DataModel,
 } from "../components/architecture-diagrams";
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
