@@ -8,7 +8,7 @@ const fr: Dictionary = {
   "meta.beta.title": "AppBase — Avancement Beta (architecture par-app)",
 
   "banner.message":
-    "AppBase a basculé vers une architecture à services partagés.",
+    "Du nouveau ! Appbase est désormais Nublestation. Profitez de fonctionnalités améliorées en visitant notre site",
   "banner.cta": "Voir l'avancement Beta d'origine →",
   "banner.close": "Ignorer",
 
