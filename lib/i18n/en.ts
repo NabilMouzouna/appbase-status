@@ -8,8 +8,8 @@ const en = {
 
   // ── banner ──────────────────────────────────────────────
   "banner.message":
-    "AppBase has pivoted to a shared-services architecture.",
-  "banner.cta": "See the original beta progress →",
+    "Big news! Appbase is now Nublestation. Enjoy enhanced features by visiting our site",
+  "banner.cta": "See official documentation →",
   "banner.close": "Dismiss",
 
   // ── what's new (notifications popup) ────────────────────
