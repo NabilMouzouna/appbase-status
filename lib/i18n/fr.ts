@@ -9,7 +9,7 @@ const fr: Dictionary = {
 
   "banner.message":
     "Du nouveau ! Appbase est désormais Nublestation. Profitez de fonctionnalités améliorées en visitant notre site",
-  "banner.cta": "Voir l'avancement Beta d'origine →",
+  "banner.cta": "Documentation officielle →",
   "banner.close": "Ignorer",
 
   "whatsnew.title": "Quoi de neuf",
