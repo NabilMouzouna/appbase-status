@@ -149,7 +149,7 @@ export default async function HomePage({
       <Banner
         message={d["banner.message"]}
         ctaLabel={d["banner.cta"]}
-        ctaHref={`/${lang}/beta`}
+        ctaHref={`https://nabilmouzouna.github.io/NubleStation/`}
         closeLabel={d["banner.close"]}
       />
 
